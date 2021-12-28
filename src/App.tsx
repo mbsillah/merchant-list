@@ -1,22 +1,28 @@
 import { useEffect } from 'react';
-import { useAppSelector } from './redux/hooks';
-import { updateExchangeRates } from './api/api';
+import { useInterval } from 'usehooks-ts';
+import { useAppSelector, useAppDispatch } from './redux/hooks';
+import { getRates } from './redux/merchantSlice';
 import './App.css';
 
 function App() {
   const merchants = useAppSelector((state) => state.merchants);
-  const cryptocurrencies = useAppSelector((state) => state.crytocurrencies);
+  const cryptocurrencies = useAppSelector((state) => state.cryptocurrencies);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    updateExchangeRates(cryptocurrencies);
+    dispatch(getRates(cryptocurrencies));
   }, []);
+
+  useInterval(() => {
+    dispatch(getRates(cryptocurrencies));
+  }, 120000);
 
   return (
     <div className="App">
       <ul>
-        {merchants.map((merchant) => {
+        {merchants.map((merchant, index) => {
           return (
-            <li>
+            <li key={index}>
               <div>{merchant.name}</div>
               <div>{merchant.itemSold}</div>
               <div>{merchant.cryptoInvoice}</div>
