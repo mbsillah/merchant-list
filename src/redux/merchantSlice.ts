@@ -37,7 +37,7 @@ const initialState: MerchantSliceState = {
   merchants: [
     {
       id: 1,
-      name: 'Capsule Corpm',
+      name: 'Capsule Corp',
       itemSold: 'Capsules',
       cryptoInvoice: 1.43219876,
       cryptocurrency: 'BTC',
