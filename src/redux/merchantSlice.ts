@@ -4,6 +4,7 @@ import { Cryptocurrency, Merchant } from '../utils/interfaces';
 interface MerchantSliceState {
   merchants: Merchant[];
   cryptocurrencies: Cryptocurrency[];
+  loading: boolean;
 }
 
 export const getRates = createAsyncThunk(
@@ -32,12 +33,21 @@ export const getRates = createAsyncThunk(
 );
 
 const initialState: MerchantSliceState = {
+  loading: false,
   merchants: [
     {
-      name: 'ShirtTown',
-      itemSold: 'T-shirts',
+      id: 1,
+      name: 'Capsule Corpm',
+      itemSold: 'Capsules',
       cryptoInvoice: 1.43219876,
       cryptocurrency: 'BTC',
+    },
+    {
+      id: 2,
+      name: 'Chain of Memories',
+      itemSold: 'Keychains',
+      cryptoInvoice: 1.56439811,
+      cryptocurrency: 'ETH',
     },
   ],
   cryptocurrencies: [
@@ -63,13 +73,30 @@ const merchantSlice = createSlice({
   name: 'merchants',
   initialState,
   reducers: {
-    addMerchant: (state, action) => {},
-    updateMerchant: (state, action) => {},
-    deleteMerchant: (state, action) => {},
+    addMerchant: (state, { payload }) => {
+      state.merchants.push(payload);
+    },
+    updateMerchant: (state, { payload }) => {
+      const index = state.merchants.findIndex(
+        (merchant) => merchant.id === payload.id
+      );
+      console.log(payload);
+      state.merchants[index] = payload;
+    },
+    deleteMerchant: (state, { payload }) => {
+      const index = state.merchants.findIndex(
+        (merchant) => merchant.id === payload
+      );
+      state.merchants.splice(index, 1);
+    },
   },
   extraReducers: (builder) => {
-    builder.addCase(getRates.fulfilled, (state, action) => {
-      state.cryptocurrencies = action.payload || [];
+    builder.addCase(getRates.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getRates.fulfilled, (state, { payload }) => {
+      state.cryptocurrencies = payload || [];
+      state.loading = false;
     });
   },
 });

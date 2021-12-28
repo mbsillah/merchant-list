@@ -1,4 +1,5 @@
 export interface Merchant {
+  id: number,
   name: string;
   itemSold: string;
   cryptoInvoice: number;
